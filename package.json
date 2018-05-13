@@ -3,9 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "heroku local:start",
-    "super": "supervisor ./bin/www",
-    "start_old": "node ./bin/www"
+    "start": "node ./bin/www",
+    "super": "supervisor ./bin/www"
   },
   "engines": {
     "node": "8.9.1",
@@ -17,8 +16,9 @@
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
     "ejs": "~2.5.7",
-    "express": "~4.15.5",
+    "express": "^4.15.5",
     "express-flash": "0.0.2",
+    "express-generator": "^4.15.5",
     "express-partials": "^0.3.0",
     "express-session": "^1.15.6",
     "method-override": "^2.3.10",
