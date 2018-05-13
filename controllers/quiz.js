@@ -196,6 +196,7 @@ exports.randomPlay = (req, res, next) => {
 exports.randomCheck = (req, res, next) => {
     const answer = req.query.answer || '';
     const result = answer.toLowerCase().trim() === req.quiz.answer.toLowerCase().trim();
+    req.session.randomPlay = req.session.randomPlay || [];
     if (result) {
         req.session.randomPlay.push(req.quiz.id);
         let score = req.session.randomPlay.length;
