@@ -154,56 +154,76 @@ exports.check = (req, res, next) => {
     });
 };
 
-// GET /quizzes/randomplay
+// GET /quizzes/randomPlay
 exports.randomPlay = (req, res, next) => {
-    let score = req.session.randomPlay.length || 0;
-    let quiz = quizzes[Math.floor(Math.random() * quizzes.length)];
-    req.session.randomPlay =  req.session.randomPlay || [];
-
-    models.quiz.findAll({where: {id:{[Sequelize.Op.notIn]: req.session.randomPlay}}})
-    .then(quizzes =>{
-        if(quizzes.length !== 0){
-            res.render('quizzes/random_play', {
+    if(req.session.randomPlay === undefined) {
+        req.session.randomPlay = [];
+    }
+    Sequelize.Promise.resolve().then(() => {
+        const whereOpt = {"id": {[Sequelize.Op.notIn]:req.session.randomPlay}};
+        return models.quiz.count({where: whereOpt})
+            .then(count => {
+                if (count === 0){
+                    let score = req.session.randomPlay.length;
+                    delete req.session.randomPlay;
+                    res.render('quizzes/random_nomore', {
+                        score
+                    });
+                }
+                let ran = Math.floor(Math.random()*count);
+                return models.quiz.findAll({
+                    where: whereOpt,
+                    offset: ran,
+                    limit: 1
+                }).then(quizzes => {
+                    return quizzes[0];
+                });
+            }).catch(error => {
+                req.flash('error', 'Error deleting the Quiz: ' + error.message);
+                next(error);
+            });
+    }).then(quiz => {
+        console.log("QUIZ" + quiz);
+        let score = req.session.randomPlay.length;
+        res.render('quizzes/random_play', {
             quiz,
             score
-            });
-        }    
-    }) 
-    .catch(Sequelize.ValidationError, error => {
-        req.flash('error', 'There are errors in the form:');
-        error.errors.forEach(({message}) => req.flash('error', message));
-        res.render('quizzes/random_play', {quiz,score});
-    })
-    .catch(error => {
-        req.flash('error', 'Error playing the Quiz: ' + error.message);
-        next(error);
+        });
     });
 };
 
-
-//GET //quizzes/randomcheck
+// GET //quizzes/randomCheck
 exports.randomCheck = (req, res, next) => {
-    let score = 0;
-    const {quiz, query} = req;
-
-    const answer = query.answer || "";
-    const result = answer.toLowerCase().trim() === quiz.answer.toLowerCase().trim();
-
-    if(result){
-        req.session.randomPlay.push(quiz.id);
-        score = req.session.randomPlay.length;
-    }else{
-        req.session.randomPlay=[];
-    }
-    if(req.session.randomPlay.length === quizzes.length){
-            res.render('quizzes/random_nomore', {
-                score
-            });    
-    }else{
+    const answer = req.query.answer || '';
+    const result = answer.toLowerCase().trim() === req.quiz.answer.toLowerCase().trim();
+    if (result) {
+        req.session.randomPlay.push(req.quiz.id);
+        let score = req.session.randomPlay.length;
+        models.quiz.count()
+            .then( count => {
+                if (score > count){
+                    delete req.session.randomPlay;
+                    res.render('quizzes/random_result', {
+                        result, 
+                        score, 
+                        answer
+                    });
+                } else {
+                    res.render('quizzes/random_result', {
+                        result,
+                        score,
+                        answer
+                    });
+                }
+            });
+    } else {
+        let score = req.session.randomPlay.length;
+        delete req.session.randomPlay;
         res.render('quizzes/random_result', {
-             score,
-             result,
-             answer
+            result, 
+            score, 
+            answer
         });
-    }    
+    }
+
 };
