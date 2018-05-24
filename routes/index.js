@@ -46,7 +46,7 @@ router.get('/', (req, res, next) => {
   res.render('index');
 });
 
-// Author page.
+// Author page. */
 router.get('/author', (req, res, next) => {
     res.render('author');
 });
@@ -133,6 +133,10 @@ router.delete('/quizzes/:quizId(\\d+)/tips/:tipId(\\d+)',
     sessionController.loginRequired,
     quizController.adminOrAuthorRequired,
     tipController.destroy);
+
+
+router.get('/quizzes/randomplay', quizController.randomPlay);
+router.get('/quizzes/randomcheck/:quizId(\\d+)', quizController.randomCheck);
 
 
 module.exports = router;
