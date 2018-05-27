@@ -20,7 +20,7 @@ exports.load = (req, res, next, tipId) => {
 
 //
 exports.adminOrAuthorRequired = (req, res, next) => {
-    const isAdmin =!! req.session.user.isAdmin;
+    const isAdmin = !! req.session.user.isAdmin;
     const isAuthor = req.session.user.id === req.tip.authorId;
     if(isAdmin || isAuthor){
         next();

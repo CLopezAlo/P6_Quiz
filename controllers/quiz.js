@@ -13,11 +13,6 @@ exports.load = (req, res, next, quizId) => {
         },
         {model: models.user, as: 'author'}
         ]
-/*
-        include: [{model: models.tip, include: [{model: models.user, as: 'author'}]
-            },{model: models.user, as: 'author'}
-        ]
-        */
     })
     .then(quiz => {
         if (quiz) {
