@@ -31,17 +31,17 @@ exports.adminOrAuthorRequired = (req, res, next) => {
 
 // GET /quizzes/:quizId/edit
 exports.edit = (req, res, next) => {
-    const{quiz,tips} = req;
-    res.render('tips/edit', {quiz, tips});
+    const{quiz,tip} = req;
+    res.render('tips/edit', {quiz, tip});
 }
 
 // PUT /quizzes/:quizId
 exports.update = (req, res, next) => {
-    const{quiz,tips} = req;
+    const{quiz,tip} = req;
     tip.text = req.body.text;
     tip.save({fields: ["text", "accepted"]})
-    .then(tips => {
-        req.flash('success', 'Tips edited successfully.');
+    .then(tip => {
+        req.flash('success', 'Tip edited successfully.');
         res.redirect('/quizzes/' + quiz.id);
     })
     .catch(Sequelize.ValidationError, error => {
