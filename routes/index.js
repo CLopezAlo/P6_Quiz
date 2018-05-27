@@ -134,12 +134,12 @@ router.delete('/quizzes/:quizId(\\d+)/tips/:tipId(\\d+)',
     quizController.adminOrAuthorRequired,
     tipController.destroy);
 
-
+// Routes P6_Quiz
 router.get('/quizzes/randomplay', quizController.randomPlay);
 router.get('/quizzes/randomcheck/:quizId(\\d+)', quizController.randomCheck);
 
 
-
+// Routes P8_Quiz
 router.get('/quizzes/:quizId(\\d+)/tips/:tipId(\\d+)/edit',
     sessionController.loginRequired,
     tipController.adminOrAuthorRequired,

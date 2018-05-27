@@ -22,11 +22,12 @@
                 <% } %>
 
                 <% if (isAdmin || isTipAuthor) { %>
-                <a href="/quizzes/<%= quizId %>/tips/<%= tip.id %>/edit">
+                   <a href="/quizzes/<%= quiz.id %>/tips/<%= tip.id %>/edit">
                         <button>Edit</button>
+                    </a>
+
 
                 <% if (isAdmin || isQuizAuthor) { %>
-
                     <a href="/quizzes/<%= quizId %>/tips/<%= tip.id %>?_method=DELETE">
                         <button>Delete</button>
                     </a>
